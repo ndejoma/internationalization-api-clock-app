@@ -1,14 +1,12 @@
-//select all the times here to get the date
-const timeCont = document.querySelector( '#time h3' );
-const dateCont = document.querySelector( '#date h3' );
+//select elements  where to set the date and the time
+const timeCont = document.querySelector( '#time > h3' );
+const dateCont = document.querySelector( '#date > h3' );
 
-//get the object for the new Date using the Date constructor
-const date = new Date();
+//get the object for the new Date o using the Date constructor
+const getDate = () => new Date();
+// const date = new Date()
 
-// at the time I run the script
-console.log( date ); //Mon Mar 28 2022 17:18:04 GMT+0300 (East Africa Time)
-
-// locale 
+//get the locale from the navigator object
 const locale = navigator.language;
 
 // options for formatting the date
@@ -19,6 +17,7 @@ const optionsDate = {
     // dateStyle: 'short'
 };
 
+
 // options for formatting the time of the clock
 const optionsTime = {
     hour: '2-digit',
@@ -27,18 +26,47 @@ const optionsTime = {
     hour12: false
 };
 
-// foratting the date
-const dateNow = new Intl.DateTimeFormat( locale, optionsDate ).format( date );
 
-// formatting of the time
-const timeNow = new Intl.DateTimeFormat( locale, optionsTime ).format( date );
+//create the fuction to set cuurent the time in the DOM
+const setTime = ( locale, date, options, targetElement ) => {
+
+    // formatting of the time
+    let timeNow = new Intl.DateTimeFormat( locale, options ).format( date );
+
+    // insert the current time into the DOM
+    targetElement.innerText = timeNow;
+};
+
+//create the fuction to set cuurent the time in the DOM
+const setDate = ( locale, date, options, targetElement ) => {
+
+    // foratting the date
+    let dateNow = new Intl.DateTimeFormat( locale, optionsDate ).format( date );
+
+    //manipulate the DOM with the current date value
+    targetElement.innerText = dateNow;
+};
+
+// create a function to be run, which sets date and the time
+const setTimeDate = () => {
+    // calll the function to set the curennt date
+    setTime( locale, getDate(), optionsTime, timeCont );
+
+    // call the function to set the current date
+    setDate( locale, getDate(), optionsDate, dateCont );
+};
+
+// call the function to set the date and the time
+setTimeDate();
 
 
-//manipulate the DOM with the current date value
-dateCont.innerText = dateNow;
+// use setInterval to call the updateTime function every 1 second or 1000ms in a callback
+const startTicking = () => {
+    setInterval( () => {
+        setTimeDate();
+    }, 1000 );
+};
 
-// insert the current time into the DOM
-timeCont.innerText = timeNow;
 
-//log to the console the value of data
-console.log( dateNow );
+// call the function to start ticking
+startTicking();
